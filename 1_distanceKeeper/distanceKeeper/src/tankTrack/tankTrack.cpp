@@ -70,13 +70,12 @@ void TankTrack::setTracksSpeed(sint16 const leftVel, sint16 const rightVel)
 	{
 		digitalWrite(leftTrackCommandPin, LOW);
 	}
-	analogWrite(leftVelCommandPin, abs_leftVel + leftVelObsComp);
+	//analogWrite(leftVelCommandPin, abs_leftVel + leftVelObsComp);
+	analogWrite(leftVelCommandPin, abs_leftVel);
 
 	/* Right Wheel */
 	// Get vel offset for right wheel
 	uint8 abs_rightVel = u_abs_16to8(rightVel);
-	//uint8 u_velOffset = getVelOffset(abs_rightVel);
-	uint8 u_velOffset = 0u;
 
 	if (rightVel >= 0)
 	{
@@ -86,7 +85,8 @@ void TankTrack::setTracksSpeed(sint16 const leftVel, sint16 const rightVel)
 	{
 		digitalWrite(rightTrackCommandPin, LOW);
 	}
-	analogWrite(rightVelCommandPin, abs_rightVel + 2*u_velOffset + rightVelObsComp);
+	//analogWrite(rightVelCommandPin, abs_rightVel + rightVelObsComp);
+	analogWrite(rightVelCommandPin, abs_rightVel);
 }
 
 /**********************************************************
@@ -233,43 +233,5 @@ void TankTrack::backward(uint8 const vel)
 **********************************************************/
 void TankTrack::stop()
 {
-	analogWrite(leftVelCommandPin , STOP_RPM);
-	analogWrite(rightVelCommandPin, STOP_RPM);
-}
-
-/**********************************************************
-*  Function getVelOffset()
-*
-*  Brief: On the current robot, left wheel spins faster than
-*         the right wheel when same control is set. This function
-*         helps finding the right control offset so wheels speed
-*         are closer one to the other. Values here used were found
-*         experimentally.
-*
-*  Inputs: [uint8] u_vel: control speed to the wheels.
-*
-*  Outputs: [uint8] control offset for the right wheel.
-*
-*  Wire Inputs: None
-*
-*  Wire Outputs: None
-**********************************************************/
-uint8 getVelOffset(uint8 u_vel)
-{
-	uint8 u_steps = MAX(TOP_VEL_OFFSET, BOTTOM_VEL_OFFSET) - MIN(TOP_VEL_OFFSET, BOTTOM_VEL_OFFSET) + 1u;
-	uint8 u_deltaVel = (MAX_SPPED_CONTROL - MIN_SPPED_CONTROL) / u_steps;
-	uint8 u_offset = 0u;
-	sint8 s_sign = (TOP_VEL_OFFSET > BOTTOM_VEL_OFFSET) ? (1) : (-1);
-
-	for (uint8 i=0; i<u_steps; i++)
-	{
-		if(u_vel < (i+1u)*u_deltaVel)
-		{
-			u_offset = (uint8)(BOTTOM_VEL_OFFSET + (sint8)i*s_sign);
-			break;
-		}
-		u_offset = TOP_VEL_OFFSET;
-	}
-
-	return u_offset;
+	setTracksSpeed(0, 0);
 }

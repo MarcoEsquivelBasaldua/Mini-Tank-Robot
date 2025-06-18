@@ -21,7 +21,7 @@
 ***************************************************************************************/
 
 //----------------- Tank Tracks ----------------//
-TankTrack tankTrack();
+TankTrack tankTrack;
 //////////////////////////////////////////
 
 //----------- Distance sensor ----------//
@@ -63,7 +63,7 @@ void loop() {
   uint8 u_minVel = INDOOR_SPEED_CONTROL;   // Min allowed speed
   uint8 u_maxVel = OUTDOOR_SPEED_CONTROL;  // Max allowed spped
   
-  uint8 u_keepDist    = 10u;                          // Desired distance
+  uint8 u_keepDist    = 8u;                          // Desired distance
   uint8 u_currentDist = distSensor.measureDistance(); // Current distance
   sint8 s_error       = (sint8)u_currentDist - (sint8)u_keepDist;
 
