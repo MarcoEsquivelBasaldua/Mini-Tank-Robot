@@ -33,7 +33,7 @@ HCSR04 distSensor(u_trigger, u_echo);
 /**********************************************************
 *  setup()
 *  Call sequence:
-*                -> stop ddr
+*                -> stop tank
 **********************************************************/
 void setup() {
   tankTrack.stop();
@@ -50,12 +50,12 @@ void setup() {
 *                -> if error abs val is greater than threshold
 *                   -> get sign of the error
 *                   -> map error to speed control with a bounded linear interpolation
-*                   -> if sign error is positive, this means ddr is far from desired distance
+*                   -> if sign error is positive, this means tank is far from desired distance
 *                      -> move forwards
-*                   -> else, ddr is too close
+*                   -> else, tank is too close
 *                      -> move backwards
 *                -> else
-*                   -> stop ddr
+*                   -> stop tank
 **********************************************************/
 void loop() {
   uint8 u_distThreshold = 2u; // We want the car to stop within a distance range

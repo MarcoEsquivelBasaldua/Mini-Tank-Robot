@@ -1,13 +1,17 @@
 /******************************************************************************
-*						DDR
+*						Tank Track
 *
 *  Author : Marco Esquivel Basaldua (https://github.com/MarcoEsquivelBasaldua)
 *
-*  Brief: Commands used for DDR (Differential Driven Robot) using the L298N module.
+*  Brief: Commands used for mini Tank Tracking system using the TB6612FNG module.
 *
-*  Wire Inputs: None
+*  Wire Inputs: LEFT_IR_SENSOR -> PIN6
+*               RIGHT_IR_SENSOR -> PIN7
 *
-*  Wire Outputs: L298n Module -> IN1, IN2, IN3, IN4
+*  Wire Outputs: leftTrackPin -> PIN2
+*                leftVelPin -> PIN5
+*                rightTrackPin -> PIN4
+*                rightVelPin -> PIN6
 ******************************************************************************/
 #ifndef TANKTRACK_h
 #define TANKTRACK_h
@@ -20,18 +24,18 @@
 #define  STOP_RPM               (  0u)                   /* RPM when stop                                            */
 #define  INDOOR_SPEED_CONTROL   (200u)                   /* Desired control for indoor usage                         */
 #define  OUTDOOR_SPEED_CONTROL  (255u)                   /* Desired control for outdoor usage                        */
-#define  LEFT_IR_SENSOR         (3u)  
-#define  RIGHT_IR_SENSOR        (2u)
+#define  LEFT_IR_SENSOR         (6u)  
+#define  RIGHT_IR_SENSOR        (7u)
 #define  LEFT_VEL_COMP          (100u)
 #define  RIGHT_VEL_COMP         (100u)
 
 /*************************************************/
 
 /****************** CONSTANTS ********************/
-const uint8 leftTrackCommandPin  = 2;
-const uint8 leftVelCommandPin    = 5;
-const uint8 rightTrackCommandPin = 4;
-const uint8 rightVelCommandPin   = 6;
+const uint8 leftTrackPin  = 2;
+const uint8 leftVelPin    = 5;
+const uint8 rightTrackPin = 4;
+const uint8 rightVelPin   = 6;
 /*************************************************/
 
 class TankTrack
