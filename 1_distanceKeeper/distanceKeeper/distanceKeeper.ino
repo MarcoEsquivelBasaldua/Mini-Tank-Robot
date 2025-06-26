@@ -53,6 +53,11 @@ void setup() {
 *                   -> stop tank
 **********************************************************/
 void loop() {
+  tankTrack.forward(MAX_SPEED);
+  delay(3000);
+  tankTrack.stop();
+  delay(3000);
+  /*
   uint8 u_distThreshold = 2u; // We want the car to stop within a distance range
 
   uint8 u_minVel = INDOOR_SPEED_CONTROL;   // Min allowed speed
@@ -67,9 +72,9 @@ void loop() {
   if(u_error > u_distThreshold)
   {
     sint8 s_errorSign   = s_getSign(s_error);
-    uint8 u_vel         = s_mapDist2Vel(       u_error      ,
-                                        (uint8)MIN_SAFE_DIST, (uint8)MAX_SAFE_DIST,
-                                               u_minVel     ,        u_maxVel      );
+    uint8 u_vel         = u_linBoundInterpol(       u_error      ,
+                                             (uint8)MIN_SAFE_DIST, (uint8)MAX_SAFE_DIST,
+                                               u_minVel          ,        u_maxVel      );
 
     if(s_errorSign > 0) // Move forward
     {
@@ -84,60 +89,60 @@ void loop() {
   {
     tankTrack.stop();
   }
+  */
 
   delay(100);
 }
 
 /**********************************************************
-*  Function s_mapDist2Vel
+*  Function u_linBoundInterpol
 *
-*  Brief: Determines the needed spped control based on error.
-*         For this a bounded linear interpolation is done.
-
-*          u_maxVel .|              .......
+*  Brief: Bounded linear interpolation is done.
+*
+*          u_maxOut .|              .......
 *                    |             /
 *                    |            /
 *                    |           /
-*          u_minVel .|........../
+*          u_minOut .|........../
 *                    |________________________________________
 *                               .  .
-*                      u_minDist   u_maxDist
+*                         u_minIn   u_maxIn
 *
-*  Inputs: [uint8] u_input   : distance input to be mapped
-*          [uint8] u_minDist : minimum allowed distance
-*          [uint8] u_maxDist : maximum allowed distance
-*          [uint8] u_minVel  : minimum allowed speed control
-*          [uint8] u_maxVel  : maximum allowed speed control
+*  Inputs: [uint8] u_input   : input to be mapped
+*          [uint8] u_minDist : minimum allowed Input
+*          [uint8] u_maxDist : maximum allowed Input
+*          [uint8] u_minOut  : minimum allowed output
+*          [uint8] u_maxOut  : maximum allowed output
 *
-*  Outputs: [uint8] mapped control speed value
+*  Outputs: [uint8] mapped value
 *
 *  Wire Inputs: None
 **********************************************************/
-uint8 s_mapDist2Vel(uint8 const u_input  , 
-                    uint8 const u_minDist, uint8 const u_maxDist, 
-                    uint8 const u_minVel , uint8 const u_maxVel)
+uint8 u_linBoundInterpol(uint8 const u_input  , 
+                         uint8 const u_minIn, uint8 const u_maxIn, 
+                         uint8 const u_minOut , uint8 const u_maxOut)
 {
-  if(u_input <= u_minDist)
+  if(u_input <= u_minIn)
   {
-    return u_minVel;
+    return u_minOut;
   }
-  else if(u_input >= u_maxDist)
+  else if(u_input >= u_maxIn)
   {
-    return u_maxVel;
+    return u_maxOut;
   }
   else
   {
     /* Convert to float all variables */
     float f_input   = (float)u_input;
-    float f_minDist = (float)u_minDist;
-    float f_maxDist = (float)u_maxDist;
-    float f_minVel  = (float)u_minVel;
-    float f_maxVel  = (float)u_maxVel;
-    float f_vel;
+    float f_minIn = (float)u_minIn;
+    float f_maxIn = (float)u_maxIn;
+    float f_minOut  = (float)u_minOut;
+    float f_maxOut  = (float)u_maxOut;
+    float f_out;
 
-    float f_slope = (f_maxVel - f_minVel)/(f_maxDist - f_minDist);
-    f_vel = f_slope * (f_input - f_minDist) + f_minVel;
-    return (uint8)f_vel;
+    float f_slope = (f_maxOut - f_minOut)/(f_maxIn - f_minIn);
+    f_out = f_slope * (f_input - f_minIn) + f_minOut;
+    return (uint8)f_out;
   }
 }
 
