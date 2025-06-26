@@ -57,17 +57,17 @@ void loop() {
   delay(3000);
   tankTrack.stop();
   delay(3000);
-  /*
+  
   uint8 u_distThreshold = 2u; // We want the car to stop within a distance range
 
-  uint8 u_minVel = INDOOR_SPEED_CONTROL;   // Min allowed speed
-  uint8 u_maxVel = OUTDOOR_SPEED_CONTROL;  // Max allowed spped
+  uint8 u_minVel = MIN_SPEED;   // Min allowed speed
+  uint8 u_maxVel = MAX_SPEED;  // Max allowed spped
   
-  uint8 u_keepDist    = 8u;                          // Desired distance
-  uint8 u_currentDist = distSensor.measureDistance(); // Current distance
-  sint8 s_error       = (sint8)u_currentDist - (sint8)u_keepDist;
+  uint8  u_keepDist    = 8u;                          // Desired distance
+  uint8  u_currentDist = distSensor.measureDistance(); // Current distance
+  sint16 s_error       = (sint16)u_currentDist - (sint16)u_keepDist;
 
-  uint8 u_error = (uint8)s_abs(s_error); // Get absolute value of dist error
+  uint8 u_error = (uint8)u_abs_16to8(s_error); // Get absolute value of dist error
 
   if(u_error > u_distThreshold)
   {
@@ -89,82 +89,9 @@ void loop() {
   {
     tankTrack.stop();
   }
-  */
+  
 
   delay(100);
-}
-
-/**********************************************************
-*  Function u_linBoundInterpol
-*
-*  Brief: Bounded linear interpolation is done.
-*
-*          u_maxOut .|              .......
-*                    |             /
-*                    |            /
-*                    |           /
-*          u_minOut .|........../
-*                    |________________________________________
-*                               .  .
-*                         u_minIn   u_maxIn
-*
-*  Inputs: [uint8] u_input   : input to be mapped
-*          [uint8] u_minDist : minimum allowed Input
-*          [uint8] u_maxDist : maximum allowed Input
-*          [uint8] u_minOut  : minimum allowed output
-*          [uint8] u_maxOut  : maximum allowed output
-*
-*  Outputs: [uint8] mapped value
-*
-*  Wire Inputs: None
-**********************************************************/
-uint8 u_linBoundInterpol(uint8 const u_input  , 
-                         uint8 const u_minIn, uint8 const u_maxIn, 
-                         uint8 const u_minOut , uint8 const u_maxOut)
-{
-  if(u_input <= u_minIn)
-  {
-    return u_minOut;
-  }
-  else if(u_input >= u_maxIn)
-  {
-    return u_maxOut;
-  }
-  else
-  {
-    /* Convert to float all variables */
-    float f_input   = (float)u_input;
-    float f_minIn = (float)u_minIn;
-    float f_maxIn = (float)u_maxIn;
-    float f_minOut  = (float)u_minOut;
-    float f_maxOut  = (float)u_maxOut;
-    float f_out;
-
-    float f_slope = (f_maxOut - f_minOut)/(f_maxIn - f_minIn);
-    f_out = f_slope * (f_input - f_minIn) + f_minOut;
-    return (uint8)f_out;
-  }
-}
-
-/**********************************************************
-*  Function s_abs
-*
-*  Brief: Returns the absolute value. 
-*         Datatypes are determined according to the ones used 
-*         in the project.
-*
-*  Inputs: [sint8] s_value : value to get absolute value from
-*
-*  Outputs: [uint8] absolute value of s_value
-*
-*  Wire Inputs: None
-**********************************************************/
-sint8 s_abs(sint8 const s_value)
-{
-  if(s_value >= 0)
-    return s_value;
-  else
-    return -s_value;
 }
 
 /**********************************************************
