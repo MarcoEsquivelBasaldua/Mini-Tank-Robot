@@ -93,25 +93,3 @@ void loop() {
 
   delay(100);
 }
-
-/**********************************************************
-*  Function s_abs
-*
-*  Brief: Returns the absolute value. 
-*         Datatypes are determined according to the ones used 
-*         in the project.
-*
-*  Inputs: [sint8] s_value : value to get absolute value from
-*
-*  Outputs: [uint8] absolute value of s_value
-*
-*  Wire Inputs: None
-**********************************************************/
-sint8 s_getSign(sint8 const s_value)
-{
-  if(s_value >= 0)
-    return 1;
-  else
-    return -1;
-}
-

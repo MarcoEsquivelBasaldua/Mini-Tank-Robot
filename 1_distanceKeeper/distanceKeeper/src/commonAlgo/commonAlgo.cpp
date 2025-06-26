@@ -115,3 +115,22 @@ float32 f_abs_floatTofloat(float32 const inVal)
 
 	return outVal;
 }
+
+/**********************************************************
+*  Function s_getSign
+*
+*  Brief: Get the sign of the in value as +/-1
+*
+*  Inputs: [sint8] s_value : value to be checked
+*
+*  Outputs: [sint8]
+*
+*  Wire Inputs: None
+**********************************************************/
+sint8 s_getSign(sint8 const s_value)
+{
+	if(s_value >= 0)
+		return 1;
+	else
+		return -1;
+}
