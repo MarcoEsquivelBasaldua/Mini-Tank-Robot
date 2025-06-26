@@ -15,18 +15,15 @@
 ******************************************************************************/
 #include "tankTrack.h"
 
-volatile uint8 leftVelObsComp = 0u;
-volatile uint8 rightVelObsComp = 0u;
-
 TankTrack::TankTrack()
 {
 	/* Set Left Track outputs */
-	pinMode(leftTrackCommandPin, OUTPUT);
-	pinMode(leftVelCommandPin  , OUTPUT);
+	pinMode(leftTrackPin, OUTPUT);
+	pinMode(leftVelPin  , OUTPUT);
 
 	/* Set Rigth Track outputs */
-	pinMode(rightTrackCommandPin, OUTPUT);
-	pinMode(rightVelCommandPin  , OUTPUT);
+	pinMode(rightTrackPin, OUTPUT);
+	pinMode(rightVelPin  , OUTPUT);
 
 	/* Stop Tank */
 	stop();
@@ -34,10 +31,6 @@ TankTrack::TankTrack()
 	/* IR sensors */
 	//pinMode(LEFT_IR_SENSOR , INPUT);
 	//pinMode(RIGHT_IR_SENSOR, INPUT);
-
-	/* Init Vel compensations */
-	leftVelObsComp  = 0u;
-	rightVelObsComp = 0u;
 }
 
 /**********************************************************
@@ -53,22 +46,21 @@ TankTrack::TankTrack()
 void TankTrack::setTracksSpeed(sint16 const leftVel, sint16 const rightVel)
 {
 	/* Compensate velocity if IR sensors are set */
-	//leftVelObsComp = (digitalRead(LEFT_IR_SENSOR) == HIGH) ? 0u : LEFT_VEL_COMP;
-	//rightVelObsComp = (digitalRead(RIGHT_IR_SENSOR) == HIGH) ? 0u : RIGHT_VEL_COMP;
+	uint8 leftVelObsComp = u_linBoundInterpol(leftVel, MIN_SPEED, MAX_SPEED, MIN_VEL_COMP, MAX_VEL_COMP);
 	
 	/* Left Track */
 	uint8 abs_leftVel = u_abs_16to8(leftVel);
 
 	if (leftVel >= 0)
 	{
-		digitalWrite(leftTrackCommandPin, HIGH);
+		digitalWrite(leftTrackPin, HIGH);
 	}
 	else
 	{
-		digitalWrite(leftTrackCommandPin, LOW);
+		digitalWrite(leftTrackPin, LOW);
 	}
-	//analogWrite(leftVelCommandPin, abs_leftVel + leftVelObsComp);
-	analogWrite(leftVelCommandPin, abs_leftVel);
+	//analogWrite(leftVelPin, abs_leftVel + leftVelObsComp);
+	analogWrite(leftVelPin, abs_leftVel - leftVelObsComp);
 
 	/* Right Wheel */
 	// Get vel offset for right wheel
@@ -76,14 +68,14 @@ void TankTrack::setTracksSpeed(sint16 const leftVel, sint16 const rightVel)
 
 	if (rightVel >= 0)
 	{
- 		digitalWrite(rightTrackCommandPin, HIGH);
+ 		digitalWrite(rightTrackPin, HIGH);
 	}
 	else
 	{
-		digitalWrite(rightTrackCommandPin, LOW);
+		digitalWrite(rightTrackPin, LOW);
 	}
-	//analogWrite(rightVelCommandPin, abs_rightVel + rightVelObsComp);
-	analogWrite(rightVelCommandPin, abs_rightVel);
+	//analogWrite(rightVelPin, abs_rightVel + rightVelObsComp);
+	analogWrite(rightVelPin, abs_rightVel);
 }
 
 /**********************************************************
