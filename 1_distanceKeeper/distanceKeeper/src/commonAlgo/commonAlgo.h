@@ -16,6 +16,10 @@
 
 /*************************************************/
 
+uint8 u_linBoundInterpol(uint8 const u_input  ,
+                         uint8 const u_minIn  , uint8 const u_maxIn, 
+                         uint8 const u_minOut , uint8 const u_maxOut);
+
 uint8 u_abs_16to8(sint16 const inVal);
 
 float32 f_abs_floatTofloat(float32 const inVal);
