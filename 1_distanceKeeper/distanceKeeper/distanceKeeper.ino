@@ -53,11 +53,6 @@ void setup() {
 *                   -> stop tank
 **********************************************************/
 void loop() {
-  tankTrack.forward(MAX_SPEED);
-  delay(3000);
-  tankTrack.stop();
-  delay(3000);
-  
   uint8 u_distThreshold = 2u; // We want the car to stop within a distance range
 
   uint8 u_minVel = MIN_SPEED;   // Min allowed speed
@@ -89,7 +84,6 @@ void loop() {
   {
     tankTrack.stop();
   }
-  
 
-  delay(100);
+  delay(10);
 }
