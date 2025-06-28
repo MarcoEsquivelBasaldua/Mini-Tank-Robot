@@ -182,5 +182,5 @@ void TankTrack::backward(uint8 const vel)
 **********************************************************/
 void TankTrack::stop()
 {
-	setTracksSpeed(0, 0);
+	setTracksSpeed(STOP_RPM, STOP_RPM);
 }
