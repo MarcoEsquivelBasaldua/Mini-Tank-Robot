@@ -22,12 +22,12 @@
 
 /******************* DEFINES *********************/
 #define  STOP_RPM               (  0u)                   /* RPM when stop                                            */
-#define  INDOOR_SPEED_CONTROL   (200u)                   /* Desired control for indoor usage                         */
-#define  OUTDOOR_SPEED_CONTROL  (255u)                   /* Desired control for outdoor usage                        */
+#define  MIN_SPEED              (150u)                   /* Desired control for indoor usage                         */
+#define  MAX_SPEED              (255u)                   /* Desired control for outdoor usage                        */
 #define  LEFT_IR_SENSOR         (6u)  
 #define  RIGHT_IR_SENSOR        (7u)
-#define  LEFT_VEL_COMP          (100u)
-#define  RIGHT_VEL_COMP         (100u)
+#define  MIN_VEL_COMP           (10u)
+#define  MAX_VEL_COMP           (22u)
 
 /*************************************************/
 

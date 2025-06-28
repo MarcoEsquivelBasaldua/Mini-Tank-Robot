@@ -55,21 +55,21 @@ void setup() {
 void loop() {
   uint8 u_distThreshold = 2u; // We want the car to stop within a distance range
 
-  uint8 u_minVel = INDOOR_SPEED_CONTROL;   // Min allowed speed
-  uint8 u_maxVel = OUTDOOR_SPEED_CONTROL;  // Max allowed spped
+  uint8 u_minVel = MIN_SPEED;   // Min allowed speed
+  uint8 u_maxVel = MAX_SPEED;  // Max allowed spped
   
-  uint8 u_keepDist    = 8u;                          // Desired distance
-  uint8 u_currentDist = distSensor.measureDistance(); // Current distance
-  sint8 s_error       = (sint8)u_currentDist - (sint8)u_keepDist;
+  uint8  u_keepDist    = 8u;                          // Desired distance
+  uint8  u_currentDist = distSensor.measureDistance(); // Current distance
+  sint16 s_error       = (sint16)u_currentDist - (sint16)u_keepDist;
 
-  uint8 u_error = (uint8)s_abs(s_error); // Get absolute value of dist error
+  uint8 u_error = (uint8)u_abs_16to8(s_error); // Get absolute value of dist error
 
   if(u_error > u_distThreshold)
   {
     sint8 s_errorSign   = s_getSign(s_error);
-    uint8 u_vel         = s_mapDist2Vel(       u_error      ,
-                                        (uint8)MIN_SAFE_DIST, (uint8)MAX_SAFE_DIST,
-                                               u_minVel     ,        u_maxVel      );
+    uint8 u_vel         = u_linBoundInterpol(       u_error      ,
+                                             (uint8)MIN_SAFE_DIST, (uint8)MAX_SAFE_DIST,
+                                               u_minVel          ,        u_maxVel      );
 
     if(s_errorSign > 0) // Move forward
     {
@@ -85,101 +85,5 @@ void loop() {
     tankTrack.stop();
   }
 
-  delay(100);
+  delay(10);
 }
-
-/**********************************************************
-*  Function s_mapDist2Vel
-*
-*  Brief: Determines the needed spped control based on error.
-*         For this a bounded linear interpolation is done.
-
-*          u_maxVel .|              .......
-*                    |             /
-*                    |            /
-*                    |           /
-*          u_minVel .|........../
-*                    |________________________________________
-*                               .  .
-*                      u_minDist   u_maxDist
-*
-*  Inputs: [uint8] u_input   : distance input to be mapped
-*          [uint8] u_minDist : minimum allowed distance
-*          [uint8] u_maxDist : maximum allowed distance
-*          [uint8] u_minVel  : minimum allowed speed control
-*          [uint8] u_maxVel  : maximum allowed speed control
-*
-*  Outputs: [uint8] mapped control speed value
-*
-*  Wire Inputs: None
-**********************************************************/
-uint8 s_mapDist2Vel(uint8 const u_input  , 
-                    uint8 const u_minDist, uint8 const u_maxDist, 
-                    uint8 const u_minVel , uint8 const u_maxVel)
-{
-  if(u_input <= u_minDist)
-  {
-    return u_minVel;
-  }
-  else if(u_input >= u_maxDist)
-  {
-    return u_maxVel;
-  }
-  else
-  {
-    /* Convert to float all variables */
-    float f_input   = (float)u_input;
-    float f_minDist = (float)u_minDist;
-    float f_maxDist = (float)u_maxDist;
-    float f_minVel  = (float)u_minVel;
-    float f_maxVel  = (float)u_maxVel;
-    float f_vel;
-
-    float f_slope = (f_maxVel - f_minVel)/(f_maxDist - f_minDist);
-    f_vel = f_slope * (f_input - f_minDist) + f_minVel;
-    return (uint8)f_vel;
-  }
-}
-
-/**********************************************************
-*  Function s_abs
-*
-*  Brief: Returns the absolute value. 
-*         Datatypes are determined according to the ones used 
-*         in the project.
-*
-*  Inputs: [sint8] s_value : value to get absolute value from
-*
-*  Outputs: [uint8] absolute value of s_value
-*
-*  Wire Inputs: None
-**********************************************************/
-sint8 s_abs(sint8 const s_value)
-{
-  if(s_value >= 0)
-    return s_value;
-  else
-    return -s_value;
-}
-
-/**********************************************************
-*  Function s_abs
-*
-*  Brief: Returns the absolute value. 
-*         Datatypes are determined according to the ones used 
-*         in the project.
-*
-*  Inputs: [sint8] s_value : value to get absolute value from
-*
-*  Outputs: [uint8] absolute value of s_value
-*
-*  Wire Inputs: None
-**********************************************************/
-sint8 s_getSign(sint8 const s_value)
-{
-  if(s_value >= 0)
-    return 1;
-  else
-    return -1;
-}
-

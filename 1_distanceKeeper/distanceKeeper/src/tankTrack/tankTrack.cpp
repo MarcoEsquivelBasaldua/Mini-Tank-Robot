@@ -15,18 +15,15 @@
 ******************************************************************************/
 #include "tankTrack.h"
 
-volatile uint8 leftVelObsComp = 0u;
-volatile uint8 rightVelObsComp = 0u;
-
 TankTrack::TankTrack()
 {
 	/* Set Left Track outputs */
-	pinMode(leftTrackCommandPin, OUTPUT);
-	pinMode(leftVelCommandPin  , OUTPUT);
+	pinMode(leftTrackPin, OUTPUT);
+	pinMode(leftVelPin  , OUTPUT);
 
 	/* Set Rigth Track outputs */
-	pinMode(rightTrackCommandPin, OUTPUT);
-	pinMode(rightVelCommandPin  , OUTPUT);
+	pinMode(rightTrackPin, OUTPUT);
+	pinMode(rightVelPin  , OUTPUT);
 
 	/* Stop Tank */
 	stop();
@@ -34,10 +31,6 @@ TankTrack::TankTrack()
 	/* IR sensors */
 	//pinMode(LEFT_IR_SENSOR , INPUT);
 	//pinMode(RIGHT_IR_SENSOR, INPUT);
-
-	/* Init Vel compensations */
-	leftVelObsComp  = 0u;
-	rightVelObsComp = 0u;
 }
 
 /**********************************************************
@@ -52,38 +45,46 @@ TankTrack::TankTrack()
 **********************************************************/
 void TankTrack::setTracksSpeed(sint16 const leftVel, sint16 const rightVel)
 {
-	/* Compensate velocity if IR sensors are set */
-	//leftVelObsComp = (digitalRead(LEFT_IR_SENSOR) == HIGH) ? 0u : LEFT_VEL_COMP;
-	//rightVelObsComp = (digitalRead(RIGHT_IR_SENSOR) == HIGH) ? 0u : RIGHT_VEL_COMP;
-	
-	/* Left Track */
-	uint8 abs_leftVel = u_abs_16to8(leftVel);
+	uint8 leftVelObsComp; // Compensate velocity if IR sensors are set
+	uint8 abs_leftVel;    // Left Track
+	uint8 abs_rightVel;   // Right Wheel
 
-	if (leftVel >= 0)
+	if (leftVel != 0)
 	{
-		digitalWrite(leftTrackCommandPin, HIGH);
+		if (leftVel > 0)
+		{
+			digitalWrite(leftTrackPin, HIGH);
+		}
+		else
+		{
+			digitalWrite(leftTrackPin, LOW);
+		}
+		abs_leftVel = u_abs_16to8(leftVel);
+		leftVelObsComp = u_linBoundInterpol(leftVel, MIN_SPEED, MAX_SPEED, MIN_VEL_COMP, MAX_VEL_COMP);
+		analogWrite(leftVelPin, (abs_leftVel - leftVelObsComp));
 	}
 	else
 	{
-		digitalWrite(leftTrackCommandPin, LOW);
+		analogWrite(leftVelPin, STOP_RPM);
 	}
-	//analogWrite(leftVelCommandPin, abs_leftVel + leftVelObsComp);
-	analogWrite(leftVelCommandPin, abs_leftVel);
 
-	/* Right Wheel */
-	// Get vel offset for right wheel
-	uint8 abs_rightVel = u_abs_16to8(rightVel);
-
-	if (rightVel >= 0)
+	if (rightVel != 0)
 	{
- 		digitalWrite(rightTrackCommandPin, HIGH);
+		if (rightVel > 0)
+		{
+ 			digitalWrite(rightTrackPin, HIGH);
+		}
+		else
+		{
+			digitalWrite(rightTrackPin, LOW);
+		}
+		abs_rightVel = u_abs_16to8(rightVel);
+		analogWrite(rightVelPin, abs_rightVel);
 	}
 	else
 	{
-		digitalWrite(rightTrackCommandPin, LOW);
+		analogWrite(rightVelPin, STOP_RPM);
 	}
-	//analogWrite(rightVelCommandPin, abs_rightVel + rightVelObsComp);
-	analogWrite(rightVelCommandPin, abs_rightVel);
 }
 
 /**********************************************************
@@ -181,5 +182,5 @@ void TankTrack::backward(uint8 const vel)
 **********************************************************/
 void TankTrack::stop()
 {
-	setTracksSpeed(0, 0);
+	setTracksSpeed(STOP_RPM, STOP_RPM);
 }
