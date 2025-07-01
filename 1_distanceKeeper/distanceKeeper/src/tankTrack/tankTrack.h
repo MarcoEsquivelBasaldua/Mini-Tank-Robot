@@ -23,6 +23,7 @@
 /******************* DEFINES *********************/
 #define  STOP_RPM               (  0u)                   /* RPM when stop                                            */
 #define  MIN_SPEED              (150u)                   /* Desired control for indoor usage                         */
+#define  MEDIUM_SPEED           (200u)                   /* Desired control for indoor usage                         */
 #define  MAX_SPEED              (255u)                   /* Desired control for outdoor usage                        */
 #define  LEFT_IR_SENSOR         (6u)  
 #define  RIGHT_IR_SENSOR        (7u)
