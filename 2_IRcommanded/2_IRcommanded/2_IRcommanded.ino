@@ -44,16 +44,16 @@ void loop() {
         tankTrack.stop();
         break;
       case IR_FORWARD:
-        tankTrack.forward(MEDIUM_SPEED);
+        tankTrack.forward(MAX_SPEED);
         break;
       case IR_BACKWARD:
-        tankTrack.backward(MEDIUM_SPEED);
+        tankTrack.backward(MAX_SPEED);
         break;
       case IR_TURNLEFT:
-        tankTrack.turnLeft(MEDIUM_SPEED);
+        tankTrack.turnLeftFast(MEDIUM_SPEED);
         break;
       case IR_TURNRIGHT:
-        tankTrack.turnRight(MEDIUM_SPEED);
+        tankTrack.turnRightFast(MEDIUM_SPEED);
         break;
       default:
         tankTrack.stop();
