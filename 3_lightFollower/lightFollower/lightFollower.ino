@@ -29,9 +29,9 @@ void setup()
 void loop()
 {
   /* LDR readings */
-  leftLDRlevel = u_mapLight2Percentage(analogRead(0));
-  rightLDRlevel = u_mapLight2Percentage(analogRead(1));
-  lightError = rightLDRlevel - leftLDRlevel;
+  leftLDRlevel         = u_mapLight2Percentage(analogRead(0));
+  rightLDRlevel        = u_mapLight2Percentage(analogRead(1));
+  lightError           = rightLDRlevel - leftLDRlevel;
   uint8 abs_lightError = u_abs_16to8((sint16)lightError);
 
   /* Set heading of the robot */
