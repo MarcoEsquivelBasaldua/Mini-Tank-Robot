@@ -69,7 +69,8 @@ uint8 u_mapLight2Percentage(uint16 const u_sensorInput)
   float f_output;
 
   float f_slope = 0.098f;
-  f_output = f_slope * (f_input);
+  f_output      = f_slope * (f_input);
+
   return (uint8)f_output;
 }
 
@@ -115,7 +116,9 @@ uint8 u_mapLigth2Degs(sint8 const s_error)
     float f_headDeg;
 
     float f_slope = (f_maxDegs - f_minDegs)/(f_maxError - f_minError);
-    f_headDeg = f_slope * (f_error - f_minError) + f_minDegs;
+    f_headDeg     = f_slope * (f_error - f_minError) + f_minDegs;
     return (uint8)f_headDeg;
   }
+  
+  return 0;
 }
