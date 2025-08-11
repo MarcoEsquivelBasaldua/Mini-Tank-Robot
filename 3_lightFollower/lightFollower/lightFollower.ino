@@ -1,4 +1,5 @@
 #include "src/myServo/myServo.h"
+#include "src/tankTrack/tankTrack.h"
 
 //----------------- Defines ----------------//
 #define SERVO_PIN       (10u)
@@ -7,6 +8,9 @@
 #define MIN_DEGS        (0u)
 #define MAX_DEGS        (180u)
 
+//----------------- Tank Tracks ----------------//
+TankTrack tankTrack;
+
 //----------- Servo Heading ------------//
 myServo  headingServo(SERVO_PIN);
 volatile uint8  prevHeading = 90u;
@@ -14,6 +18,8 @@ volatile sint16 heading;
 const    float  lpfFactor = 0.25f;
 
 /* LDR reading variables */
+const    uint8 leftLDRInput = 3u;
+const    uint8 rightDRInput = 2u;
 volatile uint8 leftLDRlevel;
 volatile uint8 rightLDRlevel;
 volatile sint8 lightError;
@@ -22,6 +28,7 @@ const    uint8 minErrorLight = 3u;
 
 void setup()
 {
+  tankTrack.stop();
   headingServo.setHeading(90u);
   delay(500);
 }
@@ -29,8 +36,8 @@ void setup()
 void loop()
 {
   /* LDR readings */
-  leftLDRlevel         = u_mapLight2Percentage(analogRead(0));
-  rightLDRlevel        = u_mapLight2Percentage(analogRead(1));
+  leftLDRlevel         = u_mapLight2Percentage(analogRead(leftLDRInput));
+  rightLDRlevel        = u_mapLight2Percentage(analogRead(rightDRInput));
   lightError           = rightLDRlevel - leftLDRlevel;
   uint8 abs_lightError = u_abs_16to8((sint16)lightError);
 
@@ -40,6 +47,101 @@ void loop()
   headingServo.setHeading((uint8)heading);
   prevHeading = heading;
 
+  /* Choose correct operational mode */
+  if ( (leftLDRlevel <= fullLight) && (rightLDRlevel <= fullLight) )
+  {
+    OP_MODE_0();
+  }
+  else if(abs_lightError <=  minErrorLight)
+  {
+    OP_MODE_1();
+  }
+  else
+  {
+    OP_MODE_2();
+  }
+
+  delay(10);
+}
+
+/**********************************************************
+*  Function OP_MODE_0
+*
+*  Brief: Operational Mode 0. Tank is stopped.
+*
+*  Inputs: None
+*
+*  Outputs: None
+**********************************************************/
+void OP_MODE_0()
+{
+  tankTrack.stop();
+}
+
+/**********************************************************
+*  Function OP_MODE_1
+*
+*  Brief: Operational Mode 1. Tank moves forward in a straight line.
+*         Tracks velocities are proportional to average value on both
+*         light readings.
+*
+*  Inputs: None
+*
+*  Outputs: None
+**********************************************************/
+void OP_MODE_1()
+{
+  /* Get average value from light readings*/
+  uint8 u_ldrLevelMean = (leftLDRlevel + rightLDRlevel) >> 1;
+
+  /* Interpolate light level to valid speed */
+  uint8 u_controlSpeed = u_linBoundInterpol(u_ldrLevelMean, 0u, 100, (uint8)MIN_SPEED, (uint8)MAX_SPEED);
+
+  /* Set Motor speed to computed control */
+  tankTrack.setTracksSpeed((sint16)u_controlSpeed, (sint16)u_controlSpeed);
+}
+
+/**********************************************************
+*  Function OP_MODE_2
+*
+*  Brief: Operational Mode 2. Tank moves forward. Tracks
+*         velocities are proportional to ligth readings,
+*         on each side.
+*
+*  Inputs: None
+*
+*  Outputs: None
+**********************************************************/
+void OP_MODE_2()
+{
+  /* Map left reading to right wheel speed  and vice versa*/
+  uint8 u_controlSpeedLeft  = u_linBoundInterpol(leftLDRlevel, 0u, 100, (uint8)MIN_SPEED, (uint8)MAX_SPEED);
+  uint8 u_controlSpeedRight = u_linBoundInterpol(rightLDRlevel, 0u, 100, (uint8)MIN_SPEED, (uint8)MAX_SPEED);
+
+  tankTrack.setTracksSpeed(u_controlSpeedLeft, u_controlSpeedRight);
+}
+
+/**********************************************************
+*  Function OP_MODE_3
+*
+*  Brief: Operational Mode 3. Tank moves backward in a straight line.
+*         Tracks velocities are proportional to average value on both
+*         light readings.
+*
+*  Inputs: None
+*
+*  Outputs: None
+**********************************************************/
+void OP_MODE_3()
+{
+  /* Get average value from light readings*/
+  uint8 u_ldrLevelMean = (leftLDRlevel + rightLDRlevel) >> 1;
+
+  /* Interpolate light level to valid speed */
+  uint8 u_controlSpeed = u_linBoundInterpol(u_ldrLevelMean, 0u, 100, (uint8)MIN_SPEED, (uint8)MAX_SPEED);
+
+  /* Set Motor speed to computed control */
+  tankTrack.setTracksSpeed(-((sint16)u_controlSpeed), -((sint16)u_controlSpeed));
 }
 
 /**********************************************************
