@@ -35,18 +35,23 @@ volatile sint16 heading;
 const    float  lpfFactor = 0.25f;
 
 /* LDR reading variables */
-const    uint8 leftLDRInput = 3u;
-const    uint8 rightDRInput = 2u;
+const    uint8 leftLDRInput      = 1u;
+const    uint8 rightDRInput      = 2u;
 volatile uint8 leftLDRlevel;
 volatile uint8 rightLDRlevel;
 volatile sint8 lightError;
-const    uint8 fullLight     = 15u;  // Full light is obtained by lower this value inclusive
-const    uint8 minErrorLight = 3u;
+const    uint8 fullLight         = 15u;  // Full light is obtained by lower this value inclusive
+const    uint8 minErrorLight     = 15u;
+const    sint8 minDiagMove2Left  = 15;
+const    sint8 minMove2Left      = 30;
+const    sint8 minDiagMove2Right = -15;
+const    sint8 minMove2Right     = -30;
 
 void setup()
 {
   tankTrack.stop();
   headingServo.setHeading(90u);
+  Serial.begin(9600);
   delay(500);
 }
 
@@ -64,6 +69,8 @@ void loop()
   headingServo.setHeading((uint8)heading);
   prevHeading = heading;
 
+  Serial.println(lightError);
+
   /* Choose correct operational mode */
   if ( (leftLDRlevel <= fullLight) && (rightLDRlevel <= fullLight) )
   {
@@ -78,7 +85,7 @@ void loop()
     OP_MODE_2();
   }
 
-  delay(10);
+  delay(50);
 }
 
 /**********************************************************
@@ -131,11 +138,23 @@ void OP_MODE_1()
 **********************************************************/
 void OP_MODE_2()
 {
-  /* Map left reading to right wheel speed  and vice versa*/
-  uint8 u_controlSpeedLeft  = u_linBoundInterpol(leftLDRlevel, 0u, 100, (uint8)MIN_SPEED, (uint8)MAX_SPEED);
-  uint8 u_controlSpeedRight = u_linBoundInterpol(rightLDRlevel, 0u, 100, (uint8)MIN_SPEED, (uint8)MAX_SPEED);
+  if (lightError >= minMove2Left)
+  {
+    tankTrack.turnLeftFast(MIN_SPEED);
+  }
+  else if (lightError >= minDiagMove2Left)
+  {
+    tankTrack.turnLeft(MIN_SPEED);
+  }
 
-  tankTrack.setTracksSpeed(u_controlSpeedLeft, u_controlSpeedRight);
+  if (lightError <= minMove2Right)
+  {
+    tankTrack.turnRightFast(MIN_SPEED);
+  }
+  else if (lightError <= minDiagMove2Right)
+  {
+    tankTrack.turnRight(MIN_SPEED);
+  }
 }
 
 /**********************************************************
