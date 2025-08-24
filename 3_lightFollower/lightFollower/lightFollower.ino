@@ -119,7 +119,7 @@ void OP_MODE_1()
   uint8 u_ldrLevelMean = (leftLDRlevel + rightLDRlevel) >> 1;
 
   /* Interpolate light level to valid speed */
-  uint8 u_controlSpeed = u_linBoundInterpol(u_ldrLevelMean, 0u, 100, (uint8)MIN_SPEED, (uint8)MAX_SPEED);
+  uint8 u_controlSpeed = u_linBoundInterpol(u_ldrLevelMean, 0u, 100, (uint8)MEDIUM_SPEED, (uint8)MAX_SPEED);
 
   /* Set Motor speed to computed control */
   tankTrack.setTracksSpeed((sint16)u_controlSpeed, (sint16)u_controlSpeed);
@@ -140,20 +140,20 @@ void OP_MODE_2()
 {
   if (lightError >= minMove2Left)
   {
-    tankTrack.turnLeftFast(MIN_SPEED);
+    tankTrack.turnLeftFast(MAX_SPEED);
   }
   else if (lightError >= minDiagMove2Left)
   {
-    tankTrack.turnLeft(MIN_SPEED);
+    tankTrack.turnLeft(MAX_SPEED);
   }
 
   if (lightError <= minMove2Right)
   {
-    tankTrack.turnRightFast(MIN_SPEED);
+    tankTrack.turnRightFast(MAX_SPEED);
   }
   else if (lightError <= minDiagMove2Right)
   {
-    tankTrack.turnRight(MIN_SPEED);
+    tankTrack.turnRight(MAX_SPEED);
   }
 }
 
