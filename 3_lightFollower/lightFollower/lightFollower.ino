@@ -51,7 +51,6 @@ void setup()
 {
   tankTrack.stop();
   headingServo.setHeading(90u);
-  Serial.begin(9600);
   delay(500);
 }
 
@@ -68,8 +67,6 @@ void loop()
   heading = (sint16)((1.0f - lpfFactor) * (float)heading + lpfFactor * (float)prevHeading);
   headingServo.setHeading((uint8)heading);
   prevHeading = heading;
-
-  Serial.println(lightError);
 
   /* Choose correct operational mode */
   if ( (leftLDRlevel <= fullLight) && (rightLDRlevel <= fullLight) )
