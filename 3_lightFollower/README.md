@@ -20,11 +20,9 @@ If both light levels are below a certain threshold (indicating full light), OP_M
 
 If the light error is below a given value, OP_MODE_1 is enabled which makes the robot move forward searching for light (both wheels move at the same speed).
 
-![Moving forward](./images/gif1_dark.gif)
-
 Finally, in any other case, OP_MODE_2 is set where each wheel spped is controlled by the light level on each sensor light.
 
-![Turning robot 1](./images/gif2_dark.gif)  ![Turning robot 2](./images/gif3_dark.gif)
+![Turning robot 1](./images/gif1_dark.gif)  ![Turning robot 2](./images/gif2_dark.gif)
 
 ## Wiring
 Using the code provided in this project, you would need to wire your components as in the simple diagram shown below. This diagram can be also found in the [lightFollower.ino](./lightFollower/lightFollower.ino) file.
