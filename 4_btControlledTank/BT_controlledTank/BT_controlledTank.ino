@@ -1,6 +1,6 @@
 #include "src/typeDefs/typeDefs.h"
 #include "src/BT_encodedData/BT_encodedData.h"
-#include "src/DDR/DDR.h"
+#include "src/tankTrack/tankTrack.h"
 
 /**************************************************************************************
 *  Wiring
@@ -21,18 +21,12 @@
 *
 ***************************************************************************************/
 
-//----------------- DDR ----------------//
-uint8 const u_ins[] = {11u, 10u, 9u, 6u};
-
-Wheel LEFTWHEEL  = {u_ins[0u], u_ins[1u]};
-Wheel RIGHTWHEEL = {u_ins[2u], u_ins[3u]};
-
-DDR ddr(LEFTWHEEL, RIGHTWHEEL);
-//////////////////////////////////////////
+//----------------- Tank Tracks ----------------//
+TankTrack tankTrack;
 
 void setup() {
   Serial.begin(9600);
-  ddr.stop();
+  tankTrack.stop();
 }
 
 void loop() {
@@ -43,34 +37,34 @@ void loop() {
     switch (c_command)
     {
       case BT_STOP:
-        ddr.stop();
+        tankTrack.stop();
         break;
       case BT_FORWARD:
-        ddr.forward(OUTDOOR_SPEED_CONTROL);
+        tankTrack.forward(MEDIUM_SPEED);
         break;
       case BT_BACKWARD:
-        ddr.backward(OUTDOOR_SPEED_CONTROL);
+        tankTrack.backward(MEDIUM_SPEED);
         break;
       case BT_LEFT:
-        ddr.turnLeft(OUTDOOR_SPEED_CONTROL);
+        tankTrack.turnLeft(MEDIUM_SPEED);
         break;
       case BT_RIGHT:
-        ddr.turnRight(OUTDOOR_SPEED_CONTROL);
+        tankTrack.turnRight(MEDIUM_SPEED);
         break;
       case BT_FORWARD_LEFT:
-        ddr.setWheelsSpeed((uint16)(THREE_QUARTERS * OUTDOOR_SPEED_CONTROL), (uint16)OUTDOOR_SPEED_CONTROL);
+        tankTrack.setTracksSpeed((uint16)(THREE_QUARTERS * MEDIUM_SPEED), (uint16)MEDIUM_SPEED);
         break;
       case BT_FORWARD_RIGHT:
-        ddr.setWheelsSpeed((uint16)OUTDOOR_SPEED_CONTROL, (uint16)(THREE_QUARTERS * OUTDOOR_SPEED_CONTROL));
+        tankTrack.setTracksSpeed((uint16)MEDIUM_SPEED, (uint16)(THREE_QUARTERS * MEDIUM_SPEED));
         break;
       case BT_BACKWARD_RIGHT:
-        ddr.setWheelsSpeed(-(uint16)(OUTDOOR_SPEED_CONTROL), -(uint16)(THREE_QUARTERS * OUTDOOR_SPEED_CONTROL));
+        tankTrack.setTracksSpeed(-(uint16)(MEDIUM_SPEED), -(uint16)(THREE_QUARTERS * MEDIUM_SPEED));
         break;
       case BT_BACKWARD_LEFT:
-        ddr.setWheelsSpeed(-(uint16)(THREE_QUARTERS * OUTDOOR_SPEED_CONTROL), -(uint16)(OUTDOOR_SPEED_CONTROL));
+        tankTrack.setTracksSpeed(-(uint16)(THREE_QUARTERS * MEDIUM_SPEED), -(uint16)(MEDIUM_SPEED));
         break;
       default:
-        ddr.stop();
+        tankTrack.stop();
         break;
     }
   }

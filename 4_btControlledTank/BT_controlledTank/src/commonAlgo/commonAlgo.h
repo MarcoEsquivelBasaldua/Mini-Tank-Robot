@@ -15,6 +15,8 @@
 #define  MAX(x,y)          ( ((x)>(y)) ? (x) : (y) )  /* Max function macro */
 #define  MIN(x,y)          ( ((x)<(y)) ? (x) : (y) )  /* Min function macro */
 
+#define THREE_QUARTERS     (0.75f)
+
 /*************************************************/
 
 uint8 u_linBoundInterpol(uint8 const u_input  ,
