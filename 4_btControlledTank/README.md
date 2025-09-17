@@ -11,7 +11,7 @@ Before stteping into the project on the [BT_controlledTank](./BT_controlledTank/
 
 Wire the components according to the next diagram.
 
-![BT decoder wiring](./images/BT_controller_wiring.png)
+![BT decoder wiring](./images/BT_decoder_wiring.png)
 
 In my case, I am using the arrow and OK keys on my remote which decode according to the image below.
 
@@ -23,7 +23,7 @@ These values are then used on the [BT_controlled_ddr](./BT_controlled_ddr/) fold
 
 Using the code provided at this project, you would need to wire your components as in the simple diagram shown below. This diagram can be also found in the [BT_controlled_ddr.ino](./BT_controlledTank/BT_controlledTank.ino) file.
 
-![IR controlled ddr wiring](./images/BT_decoder_wiring.png)
+![IR controlled tank wiring](./images/BT_controller_wiring.png)
 
 ## Libraries
 
