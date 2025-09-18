@@ -46,22 +46,22 @@ void loop() {
         tankTrack.backward(MEDIUM_SPEED);
         break;
       case BT_LEFT:
-        tankTrack.turnLeft(MEDIUM_SPEED);
+        tankTrack.turnLeftFast(MEDIUM_SPEED);
         break;
       case BT_RIGHT:
-        tankTrack.turnRight(MEDIUM_SPEED);
+        tankTrack.turnRightFast(MEDIUM_SPEED);
         break;
       case BT_FORWARD_LEFT:
-        tankTrack.setTracksSpeed((uint16)(THREE_QUARTERS * MEDIUM_SPEED), (uint16)MEDIUM_SPEED);
+        tankTrack.turnLeft(MEDIUM_SPEED);
         break;
       case BT_FORWARD_RIGHT:
-        tankTrack.setTracksSpeed((uint16)MEDIUM_SPEED, (uint16)(THREE_QUARTERS * MEDIUM_SPEED));
+        tankTrack.turnRight(MEDIUM_SPEED);
         break;
       case BT_BACKWARD_RIGHT:
-        tankTrack.setTracksSpeed(-(uint16)(MEDIUM_SPEED), -(uint16)(THREE_QUARTERS * MEDIUM_SPEED));
+        tankTrack.setTracksSpeed(-(uint16)(MEDIUM_SPEED), STOP_RPM);
         break;
       case BT_BACKWARD_LEFT:
-        tankTrack.setTracksSpeed(-(uint16)(THREE_QUARTERS * MEDIUM_SPEED), -(uint16)(MEDIUM_SPEED));
+        tankTrack.setTracksSpeed(STOP_RPM, -(uint16)(MEDIUM_SPEED));
         break;
       default:
         tankTrack.stop();
