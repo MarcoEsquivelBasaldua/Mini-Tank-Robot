@@ -5,7 +5,7 @@
 #include "src/myServo/myServo.h"
 
 //----------------- Defines ----------------//
-#define SERVO_PIN       (5u)
+#define SERVO_PIN       (9u)
 
 #define MIN_DEGS        (0u)
 #define CENTER_DEGS     (90u)
@@ -14,7 +14,7 @@
 #define TURNING_TIME    (700)
 #define BACKWARD_TIME   (1000)
 
-#define ONE_DEG_DELAY   (5u)
+#define ONE_DEG_DELAY   (10u)
 
 #define STUCKED_BETWEEN_OBS_TH (5.0f)
 //////////////////////////////////////////
@@ -31,7 +31,7 @@ uint8 u_trigger = 12u;
 uint8 u_echo    = 13u;
 HCSR04 distSensor(u_trigger, u_echo);
 
-volatile uint8 u_distance;
+volatile uint8 u_distance = 0u;
 //////////////////////////////////////////
 
 //----------- Servo Heading ------------//
@@ -54,10 +54,10 @@ void setup() {
   /* Robot Motion init */
   tankTrack.stop();
   headingServo.setHeading(CENTER_DEGS);
-  delay(500);
+  delay(1000);
 
   /* BT init */
-  Serial.begin(9600);
+  Serial.begin(19200);
 }
 
 void loop() {
@@ -138,6 +138,7 @@ void loop() {
   {
     /* Do nothing*/
   }
+  ObstacleAvoidance();
   
 }
 
@@ -156,10 +157,12 @@ void loop() {
 void ObstacleAvoidance()
 {
   /* Robot going forward */
-  tankTrack.forward(INDOOR_SPEED_CONTROL);
+  tankTrack.forward(MEDIUM_SPEED);
 
   /* Get current distance */
   u_distance = distSensor.measureDistance();
+  delay(10);
+  Serial.println(u_distance);
 
   if (u_distance < SAFETY_DISTANCE)
   {
@@ -171,31 +174,31 @@ void ObstacleAvoidance()
 
     /* Get heading back to middle */
     headingServo.setHeading(CENTER_DEGS);
-    delay(500);
+    delay(1000);
 
     /* Look to the left */
     f_meanDist2ObstaclesLeft = getMeanFreeSpace(LEFT);
 
     /* Get heading back to middle */
     headingServo.setHeading(CENTER_DEGS);
-    delay(500);
+    delay(1000);
 
     /* Change direction due to obstacle */
     if (f_abs_floatTofloat(f_meanDist2ObstaclesRight - f_meanDist2ObstaclesLeft) <= STUCKED_BETWEEN_OBS_TH)
     {
-      tankTrack.backward(INDOOR_SPEED_CONTROL);
+      tankTrack.backward(MEDIUM_SPEED);
       delay(BACKWARD_TIME);
-      tankTrack.turnRightFast(INDOOR_SPEED_CONTROL);
+      tankTrack.turnRightFast(MEDIUM_SPEED);
       delay(TURNING_TIME);
     }
     else if (f_meanDist2ObstaclesRight > f_meanDist2ObstaclesLeft)
     {
-      tankTrack.turnRightFast(INDOOR_SPEED_CONTROL);
+      tankTrack.turnRightFast(MAX_SPEED);
       delay(TURNING_TIME);
     }
     else
     {
-      tankTrack.turnLeftFast(INDOOR_SPEED_CONTROL);
+      tankTrack.turnLeftFast(MAX_SPEED);
       delay(TURNING_TIME);
     }
   }
