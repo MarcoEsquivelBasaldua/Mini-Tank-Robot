@@ -261,10 +261,10 @@ void blueToothCommand(char c_command)
       tankTrack.turnRight(MEDIUM_SPEED);
       break;
     case BT_BACKWARD_RIGHT:
-      tankTrack.setTracksSpeed(STOP_RPM, -(uint16)(MEDIUM_SPEED));
+      tankTrack.setTracksSpeed(-(uint16)(MEDIUM_SPEED), STOP_RPM);
       break;
     case BT_BACKWARD_LEFT:
-      tankTrack.setTracksSpeed(-(uint16)(MEDIUM_SPEED), STOP_RPM);
+      tankTrack.setTracksSpeed(STOP_RPM, -(uint16)(MEDIUM_SPEED));
       break;
     default:
       tankTrack.stop();
