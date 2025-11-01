@@ -57,7 +57,7 @@ void setup() {
   delay(1000);
 
   /* BT init */
-  Serial.begin(19200);
+  Serial.begin(9600);
 }
 
 void loop() {
@@ -78,10 +78,6 @@ void loop() {
     else if (c_command == BT_C)
     {
       curr_opMode = STAND_BY;
-    }
-    else if (c_command == BT_FORWARD)
-    {
-      bt_command = BT_FORWARD;
     }
     else
     {
@@ -138,7 +134,6 @@ void loop() {
   {
     /* Do nothing*/
   }
-  ObstacleAvoidance();
   
 }
 
@@ -162,7 +157,6 @@ void ObstacleAvoidance()
   /* Get current distance */
   u_distance = distSensor.measureDistance();
   delay(10);
-  Serial.println(u_distance);
 
   if (u_distance < SAFETY_DISTANCE)
   {
@@ -267,10 +261,10 @@ void blueToothCommand(char c_command)
       tankTrack.turnRight(MEDIUM_SPEED);
       break;
     case BT_BACKWARD_RIGHT:
-      tankTrack.setTracksSpeed(-(uint16)(MEDIUM_SPEED), STOP_RPM);
+      tankTrack.setTracksSpeed(STOP_RPM, -(uint16)(MEDIUM_SPEED));
       break;
     case BT_BACKWARD_LEFT:
-      tankTrack.setTracksSpeed(STOP_RPM, -(uint16)(MEDIUM_SPEED));
+      tankTrack.setTracksSpeed(-(uint16)(MEDIUM_SPEED), STOP_RPM);
       break;
     default:
       tankTrack.stop();
