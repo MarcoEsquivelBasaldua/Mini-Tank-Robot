@@ -46,6 +46,7 @@ TankTrack::TankTrack()
 void TankTrack::setTracksSpeed(sint16 const leftVel, sint16 const rightVel)
 {
 	uint8 leftVelObsComp; // Compensate velocity if IR sensors are set
+	uint8 rightVelObsComp;
 	uint8 abs_leftVel;    // Left Track
 	uint8 abs_rightVel;   // Right Wheel
 
@@ -60,8 +61,9 @@ void TankTrack::setTracksSpeed(sint16 const leftVel, sint16 const rightVel)
 			digitalWrite(leftTrackPin, LOW);
 		}
 		abs_leftVel = u_abs_16to8(leftVel);
-		leftVelObsComp = u_linBoundInterpol(leftVel, MIN_SPEED, MAX_SPEED, MIN_VEL_COMP, MAX_VEL_COMP);
-		analogWrite(leftVelPin, (abs_leftVel - leftVelObsComp));
+		//leftVelObsComp = u_linBoundInterpol(leftVel, MIN_SPEED, MAX_SPEED, MIN_VEL_COMP, MAX_VEL_COMP);
+		//analogWrite(leftVelPin, (abs_leftVel - leftVelObsComp));
+		analogWrite(leftVelPin, abs_leftVel);
 	}
 	else
 	{
@@ -79,7 +81,9 @@ void TankTrack::setTracksSpeed(sint16 const leftVel, sint16 const rightVel)
 			digitalWrite(rightTrackPin, LOW);
 		}
 		abs_rightVel = u_abs_16to8(rightVel);
-		analogWrite(rightVelPin, abs_rightVel);
+		rightVelObsComp = u_linBoundInterpol(rightVel, MIN_SPEED, MAX_SPEED, MIN_VEL_COMP, MAX_VEL_COMP);
+		analogWrite(rightVelPin, (abs_rightVel - rightVelObsComp));
+		//analogWrite(rightVelPin, abs_rightVel);
 	}
 	else
 	{
