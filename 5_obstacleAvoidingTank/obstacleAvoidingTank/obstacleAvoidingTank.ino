@@ -41,7 +41,7 @@ volatile sint16 u_heading;
 //////////////////////////////////////////
 
 //--------- Operational Modes ----------//
-enum op_Modes{STAND_BY, OBSTACLE_AVOIDANCE, BT_COMMANDED};
+enum op_Modes{STAND_BY, OBSTACLE_AVOIDANCE, BT_COMMANDED, DISTANCE_KEEPER};
 op_Modes curr_opMode;
 //////////////////////////////////////////
 
@@ -62,81 +62,86 @@ void setup() {
 
 void loop() {
 
-  Serial.println(analogRead(A2));
-  delay(20);
-
-  // if (Serial.available()) 
-  // {
-  //   char c_command = Serial.read();
+  if (Serial.available()) 
+  {
+    char c_command = Serial.read();
     
-  //   /* Obstacle Ovoidance enabled */
-  //   if (c_command == BT_A)
-  //   {
-  //     curr_opMode = OBSTACLE_AVOIDANCE;
-  //   }
-  //   else if (c_command == BT_B)
-  //   {
-  //     curr_opMode = BT_COMMANDED;
-  //   }
-  //   else if (c_command == BT_C)
-  //   {
-  //     curr_opMode = STAND_BY;
-  //   }
-  //   else
-  //   {
-  //     switch (c_command)
-  //     {
-  //       case BT_STOP:
-  //         bt_command = BT_STOP;
-  //         break;
-  //       case BT_FORWARD:
-  //         bt_command = BT_FORWARD;
-  //         break;
-  //       case BT_BACKWARD:
-  //         bt_command = BT_BACKWARD;
-  //         break;
-  //       case BT_LEFT:
-  //         bt_command = BT_LEFT;
-  //         break;
-  //       case BT_RIGHT:
-  //         bt_command = BT_RIGHT;
-  //         break;
-  //       case BT_FORWARD_LEFT:
-  //         bt_command = BT_FORWARD_LEFT;
-  //         break;
-  //       case BT_FORWARD_RIGHT:
-  //         bt_command = BT_FORWARD_RIGHT;
-  //         break;
-  //       case BT_BACKWARD_RIGHT:
-  //         bt_command = BT_BACKWARD_RIGHT;
-  //         break;
-  //       case BT_BACKWARD_LEFT:
-  //         bt_command = BT_BACKWARD_LEFT;
-  //         break;
-  //       default:
-  //         bt_command = BT_STOP;
-  //         break;
-  //     }
-  //   }
-  // }
+    /* Obstacle Ovoidance enabled */
+    if (c_command == BT_A)
+    {
+      curr_opMode = OBSTACLE_AVOIDANCE;
+    }
+    else if (c_command == BT_B)
+    {
+      curr_opMode = BT_COMMANDED;
+    }
+    else if (c_command == BT_D)
+    {
+      curr_opMode = DISTANCE_KEEPER;
+    }
+    else if (c_command == BT_C)
+    {
+      curr_opMode = STAND_BY;
+    }
+    else
+    {
+      switch (c_command)
+      {
+        case BT_STOP:
+          bt_command = BT_STOP;
+          break;
+        case BT_FORWARD:
+          bt_command = BT_FORWARD;
+          break;
+        case BT_BACKWARD:
+          bt_command = BT_BACKWARD;
+          break;
+        case BT_LEFT:
+          bt_command = BT_LEFT;
+          break;
+        case BT_RIGHT:
+          bt_command = BT_RIGHT;
+          break;
+        case BT_FORWARD_LEFT:
+          bt_command = BT_FORWARD_LEFT;
+          break;
+        case BT_FORWARD_RIGHT:
+          bt_command = BT_FORWARD_RIGHT;
+          break;
+        case BT_BACKWARD_RIGHT:
+          bt_command = BT_BACKWARD_RIGHT;
+          break;
+        case BT_BACKWARD_LEFT:
+          bt_command = BT_BACKWARD_LEFT;
+          break;
+        default:
+          bt_command = BT_STOP;
+          break;
+      }
+    }
+  }
 
 
-  // if (curr_opMode == OBSTACLE_AVOIDANCE)
-  // {
-  //   ObstacleAvoidance();
-  // }
-  // else if (curr_opMode == BT_COMMANDED)
-  // {
-  //   blueToothCommand(bt_command);
-  // }
-  // else if (curr_opMode == STAND_BY)
-  // {
-  //   tankTrack.stop();
-  // }
-  // else
-  // {
-  //   /* Do nothing*/
-  // }
+  if (curr_opMode == OBSTACLE_AVOIDANCE)
+  {
+    ObstacleAvoidance();
+  }
+  else if (curr_opMode == BT_COMMANDED)
+  {
+    blueToothCommand(bt_command);
+  }
+  else if (curr_opMode == DISTANCE_KEEPER)
+  {
+    distanceKeeper();
+  }
+  else if (curr_opMode == STAND_BY)
+  {
+    tankTrack.stop();
+  }
+  else
+  {
+    /* Do nothing*/
+  }
   
 }
 
@@ -273,4 +278,41 @@ void blueToothCommand(char c_command)
       tankTrack.stop();
       break;
   }
+}
+
+void distanceKeeper()
+{
+  uint8 u_distThreshold = 2u; // We want the car to stop within a distance range
+
+  uint8 u_minVel = MIN_SPEED;   // Min allowed speed
+  uint8 u_maxVel = MAX_SPEED;  // Max allowed spped
+  
+  uint8  u_keepDist    = 8u;                          // Desired distance
+  uint8  u_currentDist = distSensor.measureDistance(); // Current distance
+  sint16 s_error       = (sint16)u_currentDist - (sint16)u_keepDist;
+
+  uint8 u_error = (uint8)u_abs_16to8(s_error); // Get absolute value of dist error
+
+  if(u_error > u_distThreshold)
+  {
+    sint8 s_errorSign   = s_getSign(s_error);
+    uint8 u_vel         = u_linBoundInterpol(       u_error      ,
+                                             (uint8)MIN_SAFE_DIST, (uint8)MAX_SAFE_DIST,
+                                               u_minVel          ,        u_maxVel      );
+
+    if(s_errorSign > 0) // Move forward
+    {
+      tankTrack.forward(u_vel);
+    }
+    else               // Move backward
+    {
+      tankTrack.backward(u_vel);
+    }
+  }
+  else
+  {
+    tankTrack.stop();
+  }
+
+  delay(10);
 }
