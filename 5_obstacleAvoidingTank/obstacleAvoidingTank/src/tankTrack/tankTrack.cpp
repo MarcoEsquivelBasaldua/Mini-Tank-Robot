@@ -53,7 +53,7 @@ void TankTrack::setTracksSpeed(sint16 const leftVel, sint16 const rightVel)
 
 	if (leftIRdetected)
 	{
-		analogWrite(leftVelPin, STOP_RPM);
+		analogWrite(rightVelPin, STOP_RPM);
 	}
 	else
 	{
@@ -79,7 +79,7 @@ void TankTrack::setTracksSpeed(sint16 const leftVel, sint16 const rightVel)
 
 	if (rightIRdetected)
 	{
-		analogWrite(rightVelPin, STOP_RPM);
+		analogWrite(leftVelPin, STOP_RPM);
 	}
 	else
 	{
