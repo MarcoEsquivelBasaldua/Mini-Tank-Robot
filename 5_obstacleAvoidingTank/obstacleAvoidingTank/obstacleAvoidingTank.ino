@@ -54,7 +54,7 @@ void setup() {
   /* Robot Motion init */
   tankTrack.stop();
   headingServo.setHeading(CENTER_DEGS);
-  delay(1000);
+  delay(2000);
 
   /* BT init */
   Serial.begin(9600);
@@ -62,78 +62,81 @@ void setup() {
 
 void loop() {
 
-  if (Serial.available()) 
-  {
-    char c_command = Serial.read();
+  Serial.println(analogRead(A2));
+  delay(20);
+
+  // if (Serial.available()) 
+  // {
+  //   char c_command = Serial.read();
     
-    /* Obstacle Ovoidance enabled */
-    if (c_command == BT_A)
-    {
-      curr_opMode = OBSTACLE_AVOIDANCE;
-    }
-    else if (c_command == BT_B)
-    {
-      curr_opMode = BT_COMMANDED;
-    }
-    else if (c_command == BT_C)
-    {
-      curr_opMode = STAND_BY;
-    }
-    else
-    {
-      switch (c_command)
-      {
-        case BT_STOP:
-          bt_command = BT_STOP;
-          break;
-        case BT_FORWARD:
-          bt_command = BT_FORWARD;
-          break;
-        case BT_BACKWARD:
-          bt_command = BT_BACKWARD;
-          break;
-        case BT_LEFT:
-          bt_command = BT_LEFT;
-          break;
-        case BT_RIGHT:
-          bt_command = BT_RIGHT;
-          break;
-        case BT_FORWARD_LEFT:
-          bt_command = BT_FORWARD_LEFT;
-          break;
-        case BT_FORWARD_RIGHT:
-          bt_command = BT_FORWARD_RIGHT;
-          break;
-        case BT_BACKWARD_RIGHT:
-          bt_command = BT_BACKWARD_RIGHT;
-          break;
-        case BT_BACKWARD_LEFT:
-          bt_command = BT_BACKWARD_LEFT;
-          break;
-        default:
-          bt_command = BT_STOP;
-          break;
-      }
-    }
-  }
+  //   /* Obstacle Ovoidance enabled */
+  //   if (c_command == BT_A)
+  //   {
+  //     curr_opMode = OBSTACLE_AVOIDANCE;
+  //   }
+  //   else if (c_command == BT_B)
+  //   {
+  //     curr_opMode = BT_COMMANDED;
+  //   }
+  //   else if (c_command == BT_C)
+  //   {
+  //     curr_opMode = STAND_BY;
+  //   }
+  //   else
+  //   {
+  //     switch (c_command)
+  //     {
+  //       case BT_STOP:
+  //         bt_command = BT_STOP;
+  //         break;
+  //       case BT_FORWARD:
+  //         bt_command = BT_FORWARD;
+  //         break;
+  //       case BT_BACKWARD:
+  //         bt_command = BT_BACKWARD;
+  //         break;
+  //       case BT_LEFT:
+  //         bt_command = BT_LEFT;
+  //         break;
+  //       case BT_RIGHT:
+  //         bt_command = BT_RIGHT;
+  //         break;
+  //       case BT_FORWARD_LEFT:
+  //         bt_command = BT_FORWARD_LEFT;
+  //         break;
+  //       case BT_FORWARD_RIGHT:
+  //         bt_command = BT_FORWARD_RIGHT;
+  //         break;
+  //       case BT_BACKWARD_RIGHT:
+  //         bt_command = BT_BACKWARD_RIGHT;
+  //         break;
+  //       case BT_BACKWARD_LEFT:
+  //         bt_command = BT_BACKWARD_LEFT;
+  //         break;
+  //       default:
+  //         bt_command = BT_STOP;
+  //         break;
+  //     }
+  //   }
+  // }
 
 
-  if (curr_opMode == OBSTACLE_AVOIDANCE)
-  {
-    ObstacleAvoidance();
-  }
-  else if (curr_opMode == BT_COMMANDED)
-  {
-    blueToothCommand(bt_command);
-  }
-  else if (curr_opMode == STAND_BY)
-  {
-    tankTrack.stop();
-  }
-  else
-  {
-    /* Do nothing*/
-  }
+  // if (curr_opMode == OBSTACLE_AVOIDANCE)
+  // {
+  //   ObstacleAvoidance();
+  // }
+  // else if (curr_opMode == BT_COMMANDED)
+  // {
+  //   blueToothCommand(bt_command);
+  // }
+  // else if (curr_opMode == STAND_BY)
+  // {
+  //   tankTrack.stop();
+  // }
+  // else
+  // {
+  //   /* Do nothing*/
+  // }
   
 }
 

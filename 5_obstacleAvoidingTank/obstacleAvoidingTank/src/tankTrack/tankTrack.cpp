@@ -29,8 +29,8 @@ TankTrack::TankTrack()
 	stop();
 
 	/* IR sensors */
-	//pinMode(LEFT_IR_SENSOR , INPUT);
-	//pinMode(RIGHT_IR_SENSOR, INPUT);
+	pinMode(LEFT_IR_SENSOR , INPUT);
+	pinMode(RIGHT_IR_SENSOR, INPUT);
 }
 
 /**********************************************************
@@ -45,49 +45,62 @@ TankTrack::TankTrack()
 **********************************************************/
 void TankTrack::setTracksSpeed(sint16 const leftVel, sint16 const rightVel)
 {
-	uint8 leftVelObsComp; // Compensate velocity if IR sensors are set
-	uint8 rightVelObsComp;
+	uint8 rightVelObsComp; // Compensate right track velocity for a more straight movement
 	uint8 abs_leftVel;    // Left Track
 	uint8 abs_rightVel;   // Right Wheel
+	bool  leftIRdetected  = digitalRead(LEFT_IR_SENSOR) == HIGH;
+	bool  rightIRdetected = digitalRead(RIGHT_IR_SENSOR) == HIGH;
 
-	if (leftVel != 0)
-	{
-		if (leftVel > 0)
-		{
-			digitalWrite(leftTrackPin, HIGH);
-		}
-		else
-		{
-			digitalWrite(leftTrackPin, LOW);
-		}
-		abs_leftVel = u_abs_16to8(leftVel);
-		//leftVelObsComp = u_linBoundInterpol(leftVel, MIN_SPEED, MAX_SPEED, MIN_VEL_COMP, MAX_VEL_COMP);
-		//analogWrite(leftVelPin, (abs_leftVel - leftVelObsComp));
-		analogWrite(leftVelPin, abs_leftVel);
-	}
-	else
+	if (leftIRdetected)
 	{
 		analogWrite(leftVelPin, STOP_RPM);
 	}
-
-	if (rightVel != 0)
+	else
 	{
-		if (rightVel > 0)
+		if (leftVel != 0)
 		{
- 			digitalWrite(rightTrackPin, HIGH);
+			if (leftVel > 0)
+			{
+				digitalWrite(leftTrackPin, HIGH);
+			}
+			else
+			{
+				digitalWrite(leftTrackPin, LOW);
+			}
+			abs_leftVel = u_abs_16to8(leftVel);
+			analogWrite(leftVelPin, abs_leftVel);
 		}
 		else
 		{
-			digitalWrite(rightTrackPin, LOW);
+			analogWrite(leftVelPin, STOP_RPM);
 		}
-		abs_rightVel = u_abs_16to8(rightVel);
-		rightVelObsComp = u_linBoundInterpol(rightVel, MIN_SPEED, MAX_SPEED, MIN_VEL_COMP, MAX_VEL_COMP);
-		analogWrite(rightVelPin, (abs_rightVel - rightVelObsComp));
-		//analogWrite(rightVelPin, abs_rightVel);
+
+	}
+
+	if (rightIRdetected)
+	{
+		analogWrite(rightVelPin, STOP_RPM);
 	}
 	else
 	{
-		analogWrite(rightVelPin, STOP_RPM);
+		if (rightVel != 0)
+		{
+			if (rightVel > 0)
+			{
+				digitalWrite(rightTrackPin, HIGH);
+			}
+			else
+			{
+				digitalWrite(rightTrackPin, LOW);
+			}
+			abs_rightVel = u_abs_16to8(rightVel);
+			rightVelObsComp = u_linBoundInterpol(rightVel, MIN_SPEED, MAX_SPEED, MIN_VEL_COMP, MAX_VEL_COMP);
+			analogWrite(rightVelPin, (abs_rightVel - rightVelObsComp));
+		}
+		else
+		{
+			analogWrite(rightVelPin, STOP_RPM);
+		}
 	}
 }
 

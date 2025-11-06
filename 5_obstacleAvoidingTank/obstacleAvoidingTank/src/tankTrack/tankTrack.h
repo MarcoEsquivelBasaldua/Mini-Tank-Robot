@@ -25,8 +25,8 @@
 #define  MIN_SPEED              (120u)                   /* Desired control for indoor usage                         */
 #define  MEDIUM_SPEED           (220u)                   /* Desired control for indoor usage                         */
 #define  MAX_SPEED              (255u)                   /* Desired control for outdoor usage                        */
-#define  LEFT_IR_SENSOR         (6u)  
-#define  RIGHT_IR_SENSOR        (7u)
+#define  LEFT_IR_SENSOR         (7)
+#define  RIGHT_IR_SENSOR        (8)
 #define  MIN_VEL_COMP           (10u)
 #define  MAX_VEL_COMP           (15u)
 
