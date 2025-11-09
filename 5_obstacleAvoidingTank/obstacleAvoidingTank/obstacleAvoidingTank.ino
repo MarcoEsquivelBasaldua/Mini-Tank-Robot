@@ -11,7 +11,7 @@
 #define CENTER_DEGS     (90u)
 #define MAX_DEGS        (180u)
 #define SAFETY_DISTANCE (15u)
-#define TURNING_TIME    (700)
+#define TURNING_TIME    (400)
 #define BACKWARD_TIME   (1000)
 
 #define ONE_DEG_DELAY   (10u)
@@ -195,7 +195,7 @@ void ObstacleAvoidance()
     }
     else if (f_meanDist2ObstaclesRight > f_meanDist2ObstaclesLeft)
     {
-      tankTrack.turnRightFast(MAX_SPEED);
+      tankTrack.turnRightFast(MEDIUM_SPEED);
       delay(TURNING_TIME);
     }
     else
