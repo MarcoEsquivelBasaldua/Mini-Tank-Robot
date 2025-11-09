@@ -48,38 +48,12 @@ void TankTrack::setTracksSpeed(sint16 const leftVel, sint16 const rightVel)
 	uint8 rightVelObsComp; // Compensate right track velocity for a more straight movement
 	uint8 abs_leftVel;    // Left Track
 	uint8 abs_rightVel;   // Right Wheel
-	bool  leftIRdetected  = digitalRead(LEFT_IR_SENSOR) == HIGH;
-	bool  rightIRdetected = digitalRead(RIGHT_IR_SENSOR) == HIGH;
+	bool  leftIRdetected  = digitalRead(LEFT_IR_SENSOR) == LOW;
+	bool  rightIRdetected = digitalRead(RIGHT_IR_SENSOR) == LOW;
 
 	if (leftIRdetected)
 	{
 		analogWrite(rightVelPin, STOP_RPM);
-	}
-	else
-	{
-		if (leftVel != 0)
-		{
-			if (leftVel > 0)
-			{
-				digitalWrite(leftTrackPin, HIGH);
-			}
-			else
-			{
-				digitalWrite(leftTrackPin, LOW);
-			}
-			abs_leftVel = u_abs_16to8(leftVel);
-			analogWrite(leftVelPin, abs_leftVel);
-		}
-		else
-		{
-			analogWrite(leftVelPin, STOP_RPM);
-		}
-
-	}
-
-	if (rightIRdetected)
-	{
-		analogWrite(leftVelPin, STOP_RPM);
 	}
 	else
 	{
@@ -100,6 +74,31 @@ void TankTrack::setTracksSpeed(sint16 const leftVel, sint16 const rightVel)
 		else
 		{
 			analogWrite(rightVelPin, STOP_RPM);
+		}
+	}
+
+	if (rightIRdetected)
+	{
+		analogWrite(leftVelPin, STOP_RPM);
+	}
+	else
+	{
+		if (leftVel != 0)
+		{
+			if (leftVel > 0)
+			{
+				digitalWrite(leftTrackPin, HIGH);
+			}
+			else
+			{
+				digitalWrite(leftTrackPin, LOW);
+			}
+			abs_leftVel = u_abs_16to8(leftVel);
+			analogWrite(leftVelPin, abs_leftVel);
+		}
+		else
+		{
+			analogWrite(leftVelPin, STOP_RPM);
 		}
 	}
 }
