@@ -1,5 +1,8 @@
 # Obstacle Avoiding Tank
-![Avoiding Tank](./images/bordersAndObstacles.mp4.gif)
+![Avoiding Tank](./images/borders.mp4.gif)
+
+
+![Avoiding Tank 2](./images/bordersAndObstacles.mp4.gif)
 
 ## Bluetooth and Obstacle Avoiding - Dual Mode
 Using the code from the  projects [BT Controlled Tank](../4_btControlledTank/) and [Distance Keeper](../1_distanceKeeper/), we can toggle between controlling the robot ourselves using the bluetooth approach, move the tank forward untill it reaches a wall or letting the robot wander by it self avoiding obstacle collisions. 
