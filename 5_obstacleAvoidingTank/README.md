@@ -14,6 +14,6 @@ To get to the BT controlloed mode, press the B button. To get to the Distance Ke
 Since the HCSR04 sensor is not capable to "see" the obstacles to the sides of the robot, I am including IR sensors to each side to correct the robot speed when an obstacle is detected. This is useful for wall following.
 
 ## Wiring
-Using the code provided at this project, you would need to wire your components as in the simple diagram shown below. This diagram can be also found in the [obstacle_avoiding_car.ino](./obstacle_avoiding_car/obstacle_avoiding_car.ino) file.
+Using the code provided at this project, you would need to wire your components as in the simple diagram shown below. This diagram can be also found in the [obstacleAvoidingTank.ino](./obstacle_avoidobstacleAvoidingTanking_car/obstacleAvoidingTank.ino) file.
 
 ![Obstacle avoiding wiring](./images/obstacle_avoidance_wiring.png)
