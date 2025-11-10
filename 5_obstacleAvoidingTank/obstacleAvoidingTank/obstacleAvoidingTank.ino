@@ -58,6 +58,7 @@ void setup() {
 
   /* BT init */
   Serial.begin(9600);
+  randomSeed(analogRead(0));
 }
 
 void loop() {
@@ -190,7 +191,14 @@ void ObstacleAvoidance()
     {
       tankTrack.backward(MEDIUM_SPEED);
       delay(BACKWARD_TIME);
-      tankTrack.turnRightFast(MEDIUM_SPEED);
+      if (random(100) < 50)
+      {
+        tankTrack.turnRightFast(MEDIUM_SPEED);
+      }
+      else
+      {
+        tankTrack.turnLeftFast(MEDIUM_SPEED);
+      }
       delay(TURNING_TIME);
     }
     else if (f_meanDist2ObstaclesRight > f_meanDist2ObstaclesLeft)
