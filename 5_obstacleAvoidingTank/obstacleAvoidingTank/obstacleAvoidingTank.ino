@@ -16,7 +16,7 @@
 
 #define ONE_DEG_DELAY   (10u)
 
-#define STUCKED_BETWEEN_OBS_TH (5.0f)
+#define STUCKED_BETWEEN_OBS_TH (2.0f)
 //////////////////////////////////////////
 
 //----------------- Enums ----------------//
